@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Card Print Layout</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f7f6f3;
+    --surface: #ffffff;
+    --border: #e0ddd7;
+    --border-strong: #c8c4bc;
+    --text-primary: #1a1917;
+    --text-secondary: #6b6860;
+    --text-muted: #a09d98;
+    --accent: #1a1917;
+    --accent-text: #ffffff;
+    --green: #1D9E75;
+    --preview-scale: 0.38;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 2.5rem 1.5rem 3rem;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  /* ── Header ── */
+  .header {
+    margin-bottom: 2.5rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .header-text h1 {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+  }
+  .header-text p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+  }
+  .spec-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 12px;
+    white-space: nowrap;
+  }
+
+  /* ── Upload grid ── */
+  .upload-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .upload-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: border-color 0.15s;
+    position: relative;
+  }
+  .upload-card:hover { border-color: var(--border-strong); }
+  .upload-card.ready { border-color: var(--green); }
+
+  .card-header {
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .page-pill {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 3px 9px;
+    border-radius: 99px;
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .ready-icon {
+    display: none;
+    color: var(--green);
+    font-size: 18px;
+  }
+  .upload-card.ready .ready-icon { display: block; }
+
+  .drop-zone {
+    cursor: pointer;
+    aspect-ratio: 85.6/54;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: relative;
+    background: var(--bg);
+    transition: background 0.15s;
+  }
+  .drop-zone:hover { background: #f0efe9; }
+  .drop-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
+  .drop-icon {
+    font-size: 28px;
+    color: var(--text-muted);
+  }
+  .drop-text {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+  .drop-hint {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .preview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: none;
+    background: #fff;
+  }
+  .upload-card.ready .drop-zone {
+    aspect-ratio: 85.6/54;
+    padding: 0;
+    background: #fff;
+  }
+  .upload-card.ready .drop-icon,
+  .upload-card.ready .drop-text,
+  .upload-card.ready .drop-hint { display: none; }
+  .upload-card.ready .preview-img { display: block; }
+
+  .change-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: var(--surface);
+    border: none;
+    border-top: 1px solid var(--border);
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.15s;
+    display: none;
+  }
+  .upload-card.ready .change-btn { display: block; }
+  .change-btn:hover { background: var(--bg); }
+
+  /* ── Preview section ── */
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .previews-wrap {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .page-wrap {
+    flex-shrink: 0;
+  }
+  .page-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .page-name-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--border-strong);
+  }
+  .upload-card.ready ~ .page-name .page-name-dot { background: var(--green); }
+
+  .a4-preview-outer {
+    /* Fixed size container for the scaled page */
+  }
+  .a4-preview-inner {
+    transform-origin: top left;
+    background: white;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06);
+    border-radius: 2px;
+    display: grid;
+    /* columns/rows/gap set via JS for mm-accurate layout */
+  }
+  .a4-slot {
+    background: #f2f1ee;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .a4-slot img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    display: block;
+  }
+  .a4-slot-empty {
+    width: 40%;
+    height: 40%;
+    border: 1.5px dashed #d0cdc8;
+    border-radius: 3px;
+  }
+
+  /* ── Actions ── */
+  .actions-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 10px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: opacity 0.15s, background 0.15s;
+    line-height: 1;
+  }
+  .btn-dark {
+    background: var(--accent);
+    color: var(--accent-text);
+    border-color: var(--accent);
+  }
+  .btn-dark:hover { opacity: 0.85; }
+  .btn-dark:disabled { opacity: 0.35; cursor: not-allowed; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border-color: var(--border);
+  }
+  .btn-ghost:hover { background: var(--bg); color: var(--text-primary); }
+
+  .status-msg {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .status-msg.ok { color: var(--green); }
+
+  /* ── Print pages (hidden on screen, rendered for print) ── */
+  .print-only { display: none; }
+
+  @media print {
+    body, html { margin: 0; padding: 0; background: white; }
+    .screen-only { display: none !important; }
+    .print-only { display: block !important; }
+
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+
+    .print-page {
+      width: 210mm;
+      height: 297mm;
+      overflow: hidden;
+      page-break-after: always;
+      display: grid;
+      grid-template-columns: repeat(2, 85.6mm);
+      grid-template-rows: repeat(5, 54mm);
+      gap: 2mm;
+      padding: 9.5mm 18.4mm;
+      align-content: center;
+      justify-content: center;
+      background: white;
+    }
+
+    .print-page:last-child {
+      page-break-after: avoid;
+    }
+
+    .print-card {
+      width: 85.6mm;
+      height: 54mm;
+      overflow: hidden;
+    }
+
+    .print-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+      display: block;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ SCREEN UI ═══════════════ -->
+<div class="screen-only container">
+
+  <div class="header">
+    <div class="header-text">
+      <h1>Card Print Layout</h1>
+      <p>Upload front &amp; back — get a print-ready A4 PDF with a 2 × 5 card grid per page</p>
+    </div>
+    <div class="spec-badge">
+      <i class="ti ti-layout-grid"></i>
+      2 col · 5 row · A4
+    </div>
+  </div>
+
+  <!-- Upload -->
+  <div class="upload-row">
+    <!-- Front -->
+    <div class="upload-card" id="card-front">
+      <div class="card-header">
+        <div class="card-header-left">
+          <span class="page-pill">Page 1</span>
+          <span class="card-title">Card Front</span>
+        </div>
+        <i class="ti ti-circle-check ready-icon" aria-hidden="true"></i>
+      </div>
+      <label class="drop-zone" for="input-front">
+        <input type="file" id="input-front" accept="image/*" />
+        <i class="ti ti-upload drop-icon" aria-hidden="true"></i>
+        <span class="drop-text">Click to upload front</span>
+        <span class="drop-hint">PNG · JPG · WEBP · SVG</span>
+        <img class="preview-img" id="prev-front" alt="Card front preview" />
+      </label>
+      <button class="change-btn" onclick="clearCard('front')">
+        <i class="ti ti-refresh" style="vertical-align:-2px; margin-right:4px;"></i>Change image
+      </button>
+    </div>
+
+    <!-- Back -->
+    <div class="upload-card" id="card-back">
+      <div class="card-header">
+        <div class="card-header-left">
+          <span class="page-pill">Page 2</span>
+          <span class="card-title">Card Back</span>
+        </div>
+        <i class="ti ti-circle-check ready-icon" aria-hidden="true"></i>
+      </div>
+      <label class="drop-zone" for="input-back">
+        <input type="file" id="input-back" accept="image/*" />
+        <i class="ti ti-upload drop-icon" aria-hidden="true"></i>
+        <span class="drop-text">Click to upload back</span>
+        <span class="drop-hint">PNG · JPG · WEBP · SVG</span>
+        <img class="preview-img" id="prev-back" alt="Card back preview" />
+      </label>
+      <button class="change-btn" onclick="clearCard('back')">
+        <i class="ti ti-refresh" style="vertical-align:-2px; margin-right:4px;"></i>Change image
+      </button>
+    </div>
+  </div>
+
+  <!-- A4 preview -->
+  <div class="section-label">Page preview</div>
+  <div class="previews-wrap" id="previews-wrap"></div>
+
+  <!-- Actions -->
+  <div class="actions-bar">
+    <button class="btn btn-dark" id="btn-print" onclick="doPrint()" disabled>
+      <i class="ti ti-file-download" aria-hidden="true"></i>
+      Download PDF
+    </button>
+    <button class="btn btn-ghost" onclick="resetAll()">
+      <i class="ti ti-trash" aria-hidden="true"></i>
+      Reset
+    </button>
+    <span class="status-msg" id="status-msg">
+      <i class="ti ti-info-circle"></i>
+      Upload both images to continue
+    </span>
+  </div>
+
+</div>
+
+<!-- ═══════════════ PRINT PAGES ═══════════════ -->
+<div class="print-only">
+  <div class="print-page" id="print-front-page"></div>
+  <div class="print-page" id="print-back-page"></div>
+</div>
+
+<script>
+  const PX_PER_MM = 3.7795;
+
+  // A4 in px
+  const A4W = Math.round(210 * PX_PER_MM); // 794
+  const A4H = Math.round(297 * PX_PER_MM); // 1123
+
+  // Card in px (85.6mm × 54mm)
+  const CW = Math.round(85.6 * PX_PER_MM); // 324
+  const CH = Math.round(54 * PX_PER_MM);   // 204
+
+  // Gap: 2mm
+  const GAP = Math.round(2 * PX_PER_MM); // 8
+
+  // Side padding (centering 2 cards + 1 gap within A4 width)
+  const PAD_X = Math.round((A4W - CW * 2 - GAP) / 2);
+  // Top/bottom padding (centering 5 cards + 4 gaps within A4 height)
+  const PAD_Y = Math.round((A4H - CH * 5 - GAP * 4) / 2);
+
+  let srcs = { front: null, back: null };
+
+  // Preview scale to fit nicely side by side
+  const SCALE = 0.38;
+  const PREV_W = Math.round(A4W * SCALE);
+  const PREV_H = Math.round(A4H * SCALE);
+
+  function buildPreviews() {
+    const wrap = document.getElementById('previews-wrap');
+    wrap.innerHTML = '';
+
+    ['front', 'back'].forEach((side, i) => {
+      const src = srcs[side];
+
+      const pw = document.createElement('div');
+      pw.className = 'page-wrap';
+
+      const pname = document.createElement('div');
+      pname.className = 'page-name';
+      pname.innerHTML = `<span class="page-name-dot"></span> Page ${i + 1} — ${side === 'front' ? 'Front' : 'Back'}`;
+      pw.appendChild(pname);
+
+      const outer = document.createElement('div');
+      outer.className = 'a4-preview-outer';
+      outer.style.cssText = `width:${PREV_W}px;height:${PREV_H}px;overflow:hidden;position:relative;`;
+
+      const inner = document.createElement('div');
+      inner.className = 'a4-preview-inner';
+      inner.style.cssText = `
+        position:absolute;top:0;left:0;
+        width:${A4W}px;height:${A4H}px;
+        transform:scale(${SCALE});transform-origin:top left;
+        grid-template-columns:repeat(2,${CW}px);
+        grid-template-rows:repeat(5,${CH}px);
+        gap:${GAP}px;
+        padding:${PAD_Y}px ${PAD_X}px;
+        align-content:center;
+        justify-content:center;
+      `;
+
+      for (let n = 0; n < 10; n++) {
+        const slot = document.createElement('div');
+        slot.className = 'a4-slot';
+        if (src) {
+          const img = document.createElement('img');
+          img.src = src;
+          img.alt = '';
+          slot.appendChild(img);
+        } else {
+          const emp = document.createElement('div');
+          emp.className = 'a4-slot-empty';
+          slot.appendChild(emp);
+        }
+        inner.appendChild(slot);
+      }
+
+      outer.appendChild(inner);
+      pw.appendChild(outer);
+      wrap.appendChild(pw);
+    });
+  }
+
+  function buildPrintPages() {
+    ['front', 'back'].forEach(side => {
+      const page = document.getElementById(`print-${side}-page`);
+      page.innerHTML = '';
+      const src = srcs[side];
+      for (let n = 0; n < 10; n++) {
+        const card = document.createElement('div');
+        card.className = 'print-card';
+        if (src) {
+          const img = document.createElement('img');
+          img.src = src;
+          img.alt = '';
+          card.appendChild(img);
+        }
+        page.appendChild(card);
+      }
+    });
+  }
+
+  function updateUI() {
+    const both = srcs.front && srcs.back;
+    const btnPrint = document.getElementById('btn-print');
+    const statusMsg = document.getElementById('status-msg');
+
+    btnPrint.disabled = !both;
+
+    if (both) {
+      statusMsg.className = 'status-msg ok';
+      statusMsg.innerHTML = '<i class="ti ti-circle-check"></i> Ready — click Download PDF';
+    } else if (srcs.front || srcs.back) {
+      statusMsg.className = 'status-msg';
+      const missing = srcs.front ? 'back' : 'front';
+      statusMsg.innerHTML = `<i class="ti ti-info-circle"></i> Upload card ${missing} to continue`;
+    } else {
+      statusMsg.className = 'status-msg';
+      statusMsg.innerHTML = '<i class="ti ti-info-circle"></i> Upload both images to continue';
+    }
+  }
+
+  function handleFile(side, file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      srcs[side] = e.target.result;
+      document.getElementById(`prev-${side}`).src = e.target.result;
+      document.getElementById(`card-${side}`).classList.add('ready');
+      buildPreviews();
+      buildPrintPages();
+      updateUI();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  document.getElementById('input-front').addEventListener('change', e => handleFile('front', e.target.files[0]));
+  document.getElementById('input-back').addEventListener('change', e => handleFile('back', e.target.files[0]));
+
+  // Drag-and-drop
+  ['front', 'back'].forEach(side => {
+    const zone = document.getElementById(`card-${side}`).querySelector('.drop-zone');
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.style.background = '#ebe9e3'; });
+    zone.addEventListener('dragleave', () => { zone.style.background = ''; });
+    zone.addEventListener('drop', e => {
+      e.preventDefault();
+      zone.style.background = '';
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) handleFile(side, file);
+    });
+  });
+
+  function clearCard(side) {
+    srcs[side] = null;
+    document.getElementById(`prev-${side}`).src = '';
+    document.getElementById(`card-${side}`).classList.remove('ready');
+    document.getElementById(`input-${side}`).value = '';
+    buildPreviews();
+    buildPrintPages();
+    updateUI();
+  }
+
+  function resetAll() {
+    clearCard('front');
+    clearCard('back');
+  }
+
+  function doPrint() {
+    window.print();
+  }
+
+  // Init
+  buildPreviews();
+  updateUI();
+</script>
+</body>
+</html>
