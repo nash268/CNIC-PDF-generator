@@ -448,7 +448,7 @@
 </div>
 
 <script>
-  const PX_PER_MM = 4;
+  const PX_PER_MM = 3.7795;
 
   // A4 in px
   const A4W = Math.round(210 * PX_PER_MM); // 794
@@ -459,7 +459,7 @@
   const CH = Math.round(58 * PX_PER_MM);   // 204
 
   // Gap: 2mm
-  const GAP = Math.round(2 * PX_PER_MM); // 8
+  const GAP = Math.round(6 * PX_PER_MM); // 8
 
   // Side padding (centering 2 cards + 1 gap within A4 width)
   const PAD_X = Math.round((A4W - CW * 2 - GAP) / 2);
