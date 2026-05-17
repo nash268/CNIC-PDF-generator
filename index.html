@@ -126,7 +126,7 @@
 
   .drop-zone {
     cursor: pointer;
-    aspect-ratio: 85.6/54;
+    aspect-ratio: 86/55;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -167,7 +167,7 @@
     background: #fff;
   }
   .upload-card.ready .drop-zone {
-    aspect-ratio: 85.6/54;
+    aspect-ratio: 86/55;
     padding: 0;
     background: #fff;
   }
@@ -330,9 +330,9 @@
       overflow: hidden;
       page-break-after: always;
       display: grid;
-      grid-template-columns: repeat(2, 85.6mm);
-      grid-template-rows: repeat(4, 54mm);
-      gap: 2mm;
+      grid-template-columns: repeat(2, 86mm);
+      grid-template-rows: repeat(4, 55mm);
+      gap: 6mm;
       padding: 9.5mm 18.4mm;
       align-content: center;
       justify-content: center;
@@ -344,8 +344,8 @@
     }
 
     .print-card {
-      width: 85.6mm;
-      height: 54mm;
+      width: 86mm;
+      height: 55mm;
       overflow: hidden;
     }
 
@@ -454,12 +454,12 @@
   const A4W = Math.round(210 * PX_PER_MM); // 794
   const A4H = Math.round(297 * PX_PER_MM); // 1123
 
-  // Card in px (85.6mm × 54mm)
-  const CW = Math.round(89.6 * PX_PER_MM); // 324
-  const CH = Math.round(58 * PX_PER_MM);   // 204
+  // Card in px (86mm × 55mm)
+  const CW = Math.round(86 * PX_PER_MM); // 324
+  const CH = Math.round(55 * PX_PER_MM);   // 204
 
-  // Gap: 2mm
-  const GAP = Math.round(6 * PX_PER_MM); // 8
+  // Gap: 6mm
+  const GAP = Math.round(6 * PX_PER_MM); // 24
 
   // Side padding (centering 2 cards + 1 gap within A4 width)
   const PAD_X = Math.round((A4W - CW * 2 - GAP) / 2);
