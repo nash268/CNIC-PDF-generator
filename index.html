@@ -331,7 +331,7 @@
       page-break-after: always;
       display: grid;
       grid-template-columns: repeat(2, 85.6mm);
-      grid-template-rows: repeat(5, 54mm);
+      grid-template-rows: repeat(4, 54mm);
       gap: 2mm;
       padding: 9.5mm 18.4mm;
       align-content: center;
@@ -366,11 +366,11 @@
   <div class="header">
     <div class="header-text">
       <h1>Card Print Layout</h1>
-      <p>Upload front &amp; back — get a print-ready A4 PDF with a 2 × 5 card grid per page</p>
+      <p>Upload front &amp; back — get a print-ready A4 PDF with a 2 × 4 card grid per page</p>
     </div>
     <div class="spec-badge">
       <i class="ti ti-layout-grid"></i>
-      2 col · 5 row · A4
+      2 col · 4 row · A4
     </div>
   </div>
 
@@ -463,8 +463,8 @@
 
   // Side padding (centering 2 cards + 1 gap within A4 width)
   const PAD_X = Math.round((A4W - CW * 2 - GAP) / 2);
-  // Top/bottom padding (centering 5 cards + 4 gaps within A4 height)
-  const PAD_Y = Math.round((A4H - CH * 5 - GAP * 4) / 2);
+  // Top/bottom padding (centering 4 cards + 3 gaps within A4 height)
+  const PAD_Y = Math.round((A4H - CH * 4 - GAP * 3) / 2);
 
   let srcs = { front: null, back: null };
 
