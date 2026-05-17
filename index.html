@@ -506,7 +506,7 @@
         justify-content:center;
       `;
 
-      for (let n = 0; n < 10; n++) {
+      for (let n = 0; n < 8; n++) {
         const slot = document.createElement('div');
         slot.className = 'a4-slot';
         if (src) {
@@ -533,7 +533,7 @@
       const page = document.getElementById(`print-${side}-page`);
       page.innerHTML = '';
       const src = srcs[side];
-      for (let n = 0; n < 10; n++) {
+      for (let n = 0; n < 8; n++) {
         const card = document.createElement('div');
         card.className = 'print-card';
         if (src) {
